@@ -1,64 +1,56 @@
-import { getAll, create, update } from './services/numbers'
-import { useState } from 'react'
+import { getAllCountries } from "./services/connection"
+import { useEffect, useState } from "react"
+import Search from "./components/Search"
+import Countryinformation from "./components/Countryinformation"
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ])
-  const [newName, setNewName] = useState('')
 
-  getAll().then(response => { setPersons(response.data) })
+  const [countries, setCountries] = useState([])
+  const [shownCountries, setShownCountries] = useState([])
 
-  const addNumber = (event) => {
-    event.preventDefault()
-    const newPerson = { name: event.target[0].value, number: event.target[1].value }
-    setPersons(persons => [...persons, newPerson])
-    create(newPerson)
+  useEffect(() => {
+    getAllCountries().then(response => {
+      setCountries(response.data)
+    })
+  }, [])
+
+  const searchFilter = (event) => {
+    setShownCountries(countries.filter((element) => element.name.common.toLowerCase().includes(event.target.value.toLowerCase())))
+  }
+
+  const clickDetails = (country) => {
+    setShownCountries([country])
   }
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <form onSubmit={addNumber}>
-        <div>name: <input /></div>
-        <div>number: <input /></div>
-        <div><button type="submit">add</button></div>
-      </form>
-      <h2>Numbers</h2>
-      {persons.map((person) => <p>{person.name} {person.number}</p>)}
+      <Search searchFilter={searchFilter} />
+      <Countryinformation countries={shownCountries} clickDetails={clickDetails} />
     </div>
   )
-
 }
 
 export default App
 
 /*
-puhelinluettole
+ https://restcountries.com haetaan kaikki maat endpointista /all
 
-lisätään nimiä + numeroita, lomake
+ hakukenttä joka käy läpi maiden nimiä. näyttää jos alle 10
 
-hakukenttä nimille, filtteri
+ Kun ehdon täyttäviä maita on enää yksi, näytetään maan perustiedot, lippu sekä maassa puhutut kielet:
+lisää nappi maan nimen viereen jolla ylläolevan saa näkuyviin vaikka listassa monta maata
 
-Jos koko sovelluksesi on tehty yhteen komponenttiin, refaktoroi sitä eriyttämällä sopivia komponentteja. Pidä kuitenkin edelleen kaikki tila- sekä tapahtumankäsittelijäfunktiot juurikomponentissa App.
+säät lopiksi. kts 2.14
 
-db.json tietokanta jonne talletetaan nimet. talletetaan myös listaan sovellukksessa
+axios service kompo erikseen. haetaan maat vain kerran (useeffect)
 
-mahis poistaa nimiä (axios). jos lisätään nimi joka on jo siellä niin korvataan
-alert varoittamassa ja vaatimassa varmistusta
+hakukenttä samalla lailla kun edellisessä. copy paste?
 
-Tiettyä henkilöä vastaava resurssi tuhotaan palvelimelta tekemällä HTTP DELETE -pyyntö resurssia vastaavaan URL:iin. Eli jos poistaisimme esim. käyttäjän, jonka id on 2, tulisi tapauksessamme tehdä HTTP DELETE osoitteeseen localhost:3001/persons/2. Pyynnön mukana ei lähetetä mitään dataa.
+Counrtyinformation kompo joka näyttää maan tiedot. maa syötetään sille. ei näytä 
+mitää jos mitään ei syötetä. täällä if elset shownCountries koon mukaa jotka määrittää
+mihin alikomponentteihin shownCountries mapataan
 
-hienot ilmoitukset siitä kun operaatio onnistuu tai epäonnistuu
-
-(bonus erillinen 2.12 maiden tiedot, tehdään jälkeen)
-
-
-mistä lähetään....
-
-tietokanta? sitten axios, sitten lisäys. sitten poisto, sitten filtteri
+sää? tehdään tapahtumankäsittelijä joka käynnistyy kun yksi maa jäljellä tai nappia painetaan.
+se hakee sään.... ja sit.... laittaa ne muuttujaan ennen kuin maan titedot laitetaan usestateen
 
 */
