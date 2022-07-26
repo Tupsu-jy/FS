@@ -1,4 +1,18 @@
+import { getWeather } from "../services/connection"
+import { useState } from "react"
+
 const Detailed = ({ country }) => {
+
+
+    const [weather, setWeather] = useState([])
+    getWeather(country.latlng[0], country.latlng[1]).then(response => { setWeather(response.data) })
+
+    let weatherInfo = null
+
+    if (weather != null) {
+
+    }
+
 
     return (
         <div>
@@ -7,7 +21,7 @@ const Detailed = ({ country }) => {
             <p>area {country.area}</p>
             <h2>Languages:</h2>
             {Object.values(country.languages).map((lan) => <li>{lan}</li>)}
-            <img src={country.flags.png}></img>
+            <img src={country.flags.png} alt="flag"></img>
         </div>
     )
 }

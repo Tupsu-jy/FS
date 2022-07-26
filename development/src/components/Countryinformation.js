@@ -3,7 +3,7 @@ import Simple from "./Simple"
 
 const Countryinformation = (props) => {
 
-    let detailLevel = props.countries.map((country) => <Simple key={country.fifa} country={country} clickDetails={props.clickDetails} />)
+    let detailLevel = null
 
     if (props.countries.length === 1) {
         detailLevel = <Detailed country={props.countries[0]} />
