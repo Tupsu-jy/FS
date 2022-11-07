@@ -5,12 +5,19 @@ const Detailed = ({ country }) => {
 
 
     const [weather, setWeather] = useState([])
-    getWeather(country.latlng[0], country.latlng[1]).then(response => { setWeather(response.data) })
+    getWeather(country.capital).then(response => { setWeather(response.data) })
 
     let weatherInfo = null
 
-    if (weather != null) {
-
+    if (weather.length != 0) {
+        let imgsrc = "https://openweathermap.org/img/wn/" + weather.weather[0].icon + "@2x.png"
+        weatherInfo =
+            <div>
+                <h2>Weather in {country.capital}</h2>
+                <p>temperature {weather.main.temp} celsius</p>
+                <img src={imgsrc}></img>
+                <p>wind speed {weather.wind.speed} m/s</p>
+            </div>
     }
 
 
@@ -22,6 +29,8 @@ const Detailed = ({ country }) => {
             <h2>Languages:</h2>
             {Object.values(country.languages).map((lan) => <li>{lan}</li>)}
             <img src={country.flags.png} alt="flag"></img>
+            {weatherInfo}
+
         </div>
     )
 }
