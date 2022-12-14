@@ -1,0 +1,9 @@
+mongdodb yhteys-- tehty !!! EI TOIMI ENÄÄ
+ongelma ei nodemonissa vaan mongodb yhteydessä
+miten lähteä tutkimaan...
+urli on hyvä. sama setti toimi aikaisemmin. ainoa mikä muuttui on.. ip?? mutta se on sallittu joka suunnasta. kirjaston palomuuri
+KIRJASTO BLOKKAA SAATANAAAAA!!!!!!!!!!!!!!!!!!!!
+
+nodemoni ei tehty -- nodemoni tehty
+
+
