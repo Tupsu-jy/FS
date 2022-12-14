@@ -6,4 +6,17 @@ KIRJASTO BLOKKAA SAATANAAAAA!!!!!!!!!!!!!!!!!!!!
 
 nodemoni ei tehty -- nodemoni tehty
 
-
+├── index.js <-- tänne vain käynnistys? app.use etc
+├── app.js <-- tänne mitä jäljellä indexissä
+├── build
+│   ├── ...
+├── controllers
+│   └── notes.js <--tehty
+├── models
+│   └── note.js <--tehty
+├── package-lock.json
+├── package.json
+├── utils
+│   ├── logger.js <--tehty
+│   ├── config.js <--tehty
+│   └── middleware.js  
