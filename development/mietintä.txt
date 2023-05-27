@@ -1,0 +1,8 @@
+mennään suoraan lopputuloksen hahmotteluun
+
+togglable ratkaisu siihen uusi blogi komponenttiin
+blogi näytä kaikki juttu taasen... helpointa jos se on suoraan siinä blog komponentissa
+
+mikä tää ref juttu oli ja mihin sitä travitsis tässä? uusi blogi komponentin piilottamiseen sen jälkee
+kun luodaa uusi blogi. Kun luodaan uusi blogi niin kutsutaan funktiota app:issa. Siellä sitä
+käytetään sitä ref juttua togglablen visible arvon muokkaamiseen.
