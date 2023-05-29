@@ -41,5 +41,18 @@ const updateBlog = async (blog) => {
   }
 }
 
+const deleteBlog = async (id) => {
+  try {
+    const response = await axios.delete(`${baseUrl}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, postNewBlog, updateBlog }
+export default { getAll, postNewBlog, updateBlog, deleteBlog }

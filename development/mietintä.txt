@@ -6,3 +6,7 @@ blogi näytä kaikki juttu taasen... helpointa jos se on suoraan siinä blog kom
 mikä tää ref juttu oli ja mihin sitä travitsis tässä? uusi blogi komponentin piilottamiseen sen jälkee
 kun luodaa uusi blogi. Kun luodaan uusi blogi niin kutsutaan funktiota app:issa. Siellä sitä
 käytetään sitä ref juttua togglablen visible arvon muokkaamiseen.
+
+blogien poistonappi puuttuu tehty
+
+blog.user.username

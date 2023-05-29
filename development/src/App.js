@@ -53,6 +53,20 @@ const App = () => {
     setToken(localStorage.getItem('token'));
   }
 
+  const handleDelete = async (blog) => {
+    const confirmDelete = window.confirm(`Remove blog ${blog.title} by ${blog.author}`);
+    if (confirmDelete) {
+      const response = await blogService.deleteBlog(blog.id)
+      if (response.status === 200) {
+        showNotification(`Blog ${blog.title} by ${blog.author} deleted`, true);
+        const updatedBlogs = blogs.filter(b => b.id !== blog.id);
+        setBlogs(updatedBlogs);
+      } else {
+        showNotification(response.data.error, false);
+      }
+    }
+  }
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
@@ -73,7 +87,7 @@ const App = () => {
             .slice()
             .sort((a, b) => b.likes - a.likes)
             .map(blog => (
-              <Blog key={blog.id} blog={blog} handleNewLike={handleNewLike} />
+              <Blog key={blog.id} blog={blog} handleNewLike={handleNewLike} handleDelete={handleDelete} />
             ))}
         </div>
       ) : (
