@@ -10,3 +10,5 @@ käytetään sitä ref juttua togglablen visible arvon muokkaamiseen.
 blogien poistonappi puuttuu tehty
 
 blog.user.username
+eli verrataan käyttäjänimiä tehty
+
