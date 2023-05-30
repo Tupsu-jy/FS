@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import blogService from '../services/blogs';
+import blogService from '../services/blogs.js';
 
 const CreateBlog = ({ handleNewBlog, showNotification }) => {
   const [title, setTitle] = useState('');

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { signup } from '../services/users';
+import { signup } from '../services/users.js';
 
 const Signup = ({ showNotification }) => {
   const [username, setUsername] = useState('');

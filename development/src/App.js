@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
-import Login from './components/Login'
-import blogService from './services/blogs'
-import Signup from './components/Signup';
-import CreateBlog from './components/Createblog';
-import Notification from './components/Notification';
-import Togglable from './components/Togglable';
+import Blog from './components/Blog.js'
+import Login from './components/Login.js'
+import blogService from './services/blogs.js'
+import Signup from './components/Signup.js';
+import CreateBlog from './components/Createblog.js';
+import Notification from './components/Notification.js';
+import Togglable from './components/Togglable.js';
 
 
 const App = () => {
