@@ -1,23 +1,20 @@
-import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog.js'
-import Login from './components/Login.js'
-import blogService from './services/blogs.js'
-import Signup from './components/Signup.js';
-import CreateBlog from './components/Createblog.js';
-import Notification from './components/Notification.js';
-import Togglable from './components/Togglable.js';
+import { useState, useEffect, useRef } from 'react';
+import Blog from './components/Blog';
+import Login from './components/Login';
+import blogService from './services/blogs';
+import Signup from './components/Signup';
+import CreateBlog from './components/Createblog';
+import Notification from './components/Notification';
+import Togglable from './components/Togglable';
 
-
-const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [token, setToken] = useState(() => {
-    return localStorage.getItem('token');
-  });
+function App() {
+  const [blogs, setBlogs] = useState([]);
+  const [token, setToken] = useState(() => localStorage.getItem('token'));
   const [notification, setNotification] = useState({
     text: null,
     success: false,
   });
-  const noteFormRef = useRef()
+  const noteFormRef = useRef();
 
   const showNotification = (text, success) => {
     setNotification({ text, success });
@@ -25,53 +22,47 @@ const App = () => {
 
   const handleNewBlog = () => {
     noteFormRef.current.toggleVisibility();
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }
+    blogService.getAll().then((fetchedBlogs) => setBlogs(fetchedBlogs));
+  };
 
   const handleNewLike = async (blog) => {
-    const response = await blogService.updateBlog(blog)
+    const response = await blogService.updateBlog(blog);
     if (response.status === 200) {
       showNotification(`You liked ${blog.title} by ${blog.author}`, true);
-      blogService.getAll().then(blogs =>
-        setBlogs(blogs)
-      )
+      blogService.getAll().then((fetchedBlogs) => setBlogs(fetchedBlogs));
     } else {
       showNotification(response.data.error, false);
     }
-  }
+  };
 
   const handleLogin = () => {
     setToken(localStorage.getItem('token'));
-  }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
     localStorage.removeItem('name');
     setToken(localStorage.getItem('token'));
-  }
+  };
 
   const handleDelete = async (blog) => {
     const confirmDelete = window.confirm(`Remove blog ${blog.title} by ${blog.author}`);
     if (confirmDelete) {
-      const response = await blogService.deleteBlog(blog.id)
+      const response = await blogService.deleteBlog(blog.id);
       if (response.status === 200) {
         showNotification(`Blog ${blog.title} by ${blog.author} deleted`, true);
-        const updatedBlogs = blogs.filter(b => b.id !== blog.id);
+        const updatedBlogs = blogs.filter((b) => b.id !== blog.id);
         setBlogs(updatedBlogs);
       } else {
         showNotification(response.data.error, false);
       }
     }
-  }
+  };
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }, [])
+    blogService.getAll().then((fetchedBlogs) => setBlogs(fetchedBlogs));
+  }, []);
 
   return (
     <div>
@@ -79,15 +70,26 @@ const App = () => {
       {token ? (
         <div>
           <h2>blogs</h2>
-          <p>{localStorage.getItem('name')} logged in <button onClick={handleLogout}>Logout</button></p>
-          <Togglable buttonLabel='new blog' ref={noteFormRef}>
+          <p>
+            {localStorage.getItem('name')}
+            {' '}
+            logged in
+            {' '}
+            <button type="button" onClick={handleLogout}>Logout</button>
+          </p>
+          <Togglable buttonLabel="new blog" ref={noteFormRef}>
             <CreateBlog handleNewBlog={handleNewBlog} showNotification={showNotification} />
           </Togglable>
           {blogs
             .slice()
             .sort((a, b) => b.likes - a.likes)
-            .map(blog => (
-              <Blog key={blog.id} blog={blog} handleNewLike={handleNewLike} handleDelete={handleDelete} />
+            .map((blog) => (
+              <Blog
+                key={blog.id}
+                blog={blog}
+                handleNewLike={handleNewLike}
+                handleDelete={handleDelete}
+              />
             ))}
         </div>
       ) : (
@@ -97,7 +99,7 @@ const App = () => {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

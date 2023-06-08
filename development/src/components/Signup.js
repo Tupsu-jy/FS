@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { signup } from '../services/users.js';
+import PropTypes from 'prop-types';
+import signup from '../services/users';
 
-const Signup = ({ showNotification }) => {
+function Signup({ showNotification }) {
   const [username, setUsername] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -24,37 +25,43 @@ const Signup = ({ showNotification }) => {
     <div>
       <h2>Signup Form</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
+        <label htmlFor="username">
+          Username:
           <input
             type="text"
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-        </div>
-        <div>
-          <label htmlFor="name">Name:</label>
+        </label>
+
+        <label htmlFor="name">
+          Name:
           <input
             type="text"
             id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
+        </label>
+
+        <label htmlFor="password">
+          Password:
           <input
             type="password"
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </div>
+        </label>
         <button type="submit">Signup</button>
       </form>
     </div>
   );
+}
+
+Signup.propTypes = {
+  showNotification: PropTypes.func.isRequired,
 };
 
 export default Signup;

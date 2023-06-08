@@ -1,5 +1,6 @@
-import axios from 'axios'
-const baseUrl = '/api/login'
+import axios from 'axios';
+
+const baseUrl = '/api/login';
 
 const login = async (username, password) => {
   try {
@@ -15,8 +16,6 @@ const login = async (username, password) => {
   } catch (error) {
     return error.response;
   }
+};
 
-}
-
-// eslint-disable-next-line import/no-anonymous-default-export
-export { login }
+export default login;

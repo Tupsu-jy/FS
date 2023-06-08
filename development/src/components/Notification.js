@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 function Notification({ text, success }) {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    // show the notification for 3 seconds
     setShow(true);
     setTimeout(() => {
       setShow(false);
@@ -12,21 +12,30 @@ function Notification({ text, success }) {
   }, [text]);
 
   const message = () => {
-    if (text == null || show === false) {
+    if (text === null || show === false) {
       return null;
-    } else {
-      if (success) {
-        return <div className='notification success'>{text}</div>;
-      } else {
-        return <div className='notification failure'>{text}</div>;
-      }
     }
+    if (success) {
+      return <div className="notification success">{text}</div>;
+    }
+    return <div className="notification failure">{text}</div>;
   };
+
   return (
     <>
       {message()}
     </>
   );
 }
+
+Notification.propTypes = {
+  text: PropTypes.string,
+  success: PropTypes.bool,
+};
+
+Notification.defaultProps = {
+  text: null,
+  success: false,
+};
 
 export default Notification;

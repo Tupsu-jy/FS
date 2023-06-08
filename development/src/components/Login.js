@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { login } from '../services/login.js';
+import PropTypes from 'prop-types';
+import login from '../services/login';
 
-const Login = ({ handleLogin, showNotification }) => {
+function Login({ handleLogin, showNotification }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -17,35 +18,39 @@ const Login = ({ handleLogin, showNotification }) => {
     } else {
       showNotification('Error logging in', false);
     }
-
   };
 
   return (
-    <div>
+    <div id="login-component">
       <h2>Login Form</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
+      <form id="login-form" onSubmit={handleSubmit}>
+        <label htmlFor="username">
+          Username:
           <input
             type="text"
-            id="username"
+            id="login-username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
+        </label>
+        <label htmlFor="password">
+          Password:
           <input
             type="password"
-            id="password"
+            id="login-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </div>
+        </label>
         <button type="submit">Login</button>
       </form>
     </div>
   );
+}
+
+Login.propTypes = {
+  handleLogin: PropTypes.func.isRequired,
+  showNotification: PropTypes.func.isRequired,
 };
 
 export default Login;
