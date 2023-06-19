@@ -1,3 +1,6 @@
+import React, { useContext, useEffect } from 'react'
+import { NotificationContext } from '../contexts/NotificationContext'
+
 const Notification = () => {
   const style = {
     border: 'solid',
@@ -5,12 +8,26 @@ const Notification = () => {
     borderWidth: 1,
     marginBottom: 5
   }
-  
-  if (true) return null
+
+  const { notification, dispatch } = useContext(NotificationContext)
+
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        dispatch({ type: 'CLEAR_NOTIFICATION' })
+      }, 5000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [notification, dispatch])
+
+  if (!notification) {
+    return null
+  }
 
   return (
     <div style={style}>
-      
+      {notification}
     </div>
   )
 }
