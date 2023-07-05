@@ -1,0 +1,36 @@
+afgsdasdfgasdgfagsd½½½½½½½½½½½½½½½½½½½½½½½½½½½½½½½
+
+mulla on App.js jossa monta komponettiä samassa. Ne pitää erotella. gpt???
+
+Mun pitää tehdä route tsydeemi. eri komponettien tulee olla eri sivuilla. Kirjoitetaan ylös miten:
+
+Sovelluksen juuressa eli polulla / näytetään anekdoottien lista:
+
+kome linkkiä:
+anecdotes näyttää anekdootit
+create new näyttää uuden lomakkeen
+abaut näyttää sen abaut tekstit
++plus kaikki ylä/ala palkki sälät
+
+2 vaihe: miten toteutan mun omassa mieti
+
+menu sisältää ne linkit
+
+app sisältää ne routet
+
+
+SEURAAVA
+
+siis custom hookki jolla korvataan ne input filed usestate tsydeemit create formissa
+
+SEURAAVA
+maat/liput etc
+
+uusi hookki apin käyttöön
+
+yleispätevä custom hookki jolle vain annetaan urli
+
+VITTUSAATANA
+
+nää eslint confaukset sekoilee taas. Tai siis sekoileeko? ei sekoillut
+

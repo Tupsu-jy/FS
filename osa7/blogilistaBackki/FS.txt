@@ -1,0 +1,246 @@
+mongdodb yhteys-- tehty !!! EI TOIMI ENÄÄ
+ongelma ei nodemonissa vaan mongodb yhteydessä
+miten lähteä tutkimaan...
+urli on hyvä. sama setti toimi aikaisemmin. ainoa mikä muuttui on.. ip?? mutta se on sallittu joka suunnasta. kirjaston palomuuri
+KIRJASTO BLOKKAA SAATANAAAAA!!!!!!!!!!!!!!!!!!!!
+
+nodemoni ei tehty -- nodemoni tehty
+
+├── index.js <-- tehty
+├── app.js <-- tänne mitä jäljellä indexissä
+├── build
+│   ├── ...
+├── controllers
+│   └── notes.js <--tehty
+├── models
+│   └── note.js <--tehty
+├── package-lock.json
+├── package.json
+├── utils
+│   ├── logger.js <--tehty
+│   ├── config.js <--tehty
+│   └── middleware.js <--??
+
+niin miten kuodaab serveri ilman http
+
+const http = require('http')
+const express = require('express')
+const app = express()
+const cors = require('cors')
+const mongoose = require('mongoose')
+
+const blogSchema = mongoose.Schema({
+  title: String,
+  author: String,
+  url: String,
+  likes: Number
+})
+
+const Blog = mongoose.model('Blog', blogSchema)
+
+const mongoUrl = 'mongodb://localhost/bloglist'
+mongoose.connect(mongoUrl)
+
+app.use(cors())
+app.use(express.json())
+
+app.get('/api/blogs', (request, response) => {
+  Blog
+    .find({})
+    .then(blogs => {
+      response.json(blogs)
+    })
+})
+
+app.post('/api/blogs', (request, response) => {
+  const blog = new Blog(request.body)
+
+  blog
+    .save()
+    .then(result => {
+      response.status(201).json(result)
+    })
+})
+
+const PORT = 3003
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
+
+nyt testejä. mä teen totalLikes funktion ja laitan 
+describe lohkoon monta testiä sitö varten
+
+map objekti luodaan. käydään läpi blogi array for loopilla
+tai jollaina samanlaisella. sitten if map.has(author)
+niin lisätään siihen valmiiseen lukuun. jos ei niin luodaan uusi
+
+käytä config fileä. 
+vaihdetaan käytettävät tietokannat ja niiden nimet. 
+uusi salasana mongodb.
+
+afterAll() sulkee yhteyden ennen kuin testit valmiina.
+yksi blogi ei tule takaisin??
+
+kaikki tulee takaisin mitä on. mutta siellä on vain 5.
+
+duplicate key error käy järkeen vain jos se koittaa lisäillä
+niitä ennen kuin on poistettu vanhat, mutta miksi niin muka kävisi??????
+ei kun ei. kummankin testin kohdalla tehdään kummatkin samaan aikaan?
+
+miten se next juttu toimikaan
+
+olin tekemässä testejä
+
+Tee testit blogin lisäämiselle eli osoitteeseen /api/blogs tapahtuvalle HTTP POST -pyynnölle. 
+Testin tulee varmistaa, että jos uusi blogi ei sisällä kenttiä title ja url, pyyntöön vastataan 
+statuskoodilla 400 Bad Request.
+
+next() jutulla palautetaan 400 bad request
+async await miten tarkoitus tehdä, mutta mä oon tehnyt .then() avulla. 
+pitäiskö korjata
+
+-korjaa async muoto<--tehty
+-lisää virheidenkäisttely tätätätätätäätä
+
+blog.save ei toimi koska siihen ei sovi except(400)'
+api.post varmaan toimis, mutta miten laitetaan blogi siihen mukaan
+
+testi toimii, mutta koodi paskaa. api hyväksyy blogin ilman kenttiä
+se e 'i ohjaidu virheidenkäsitteljään.
+eli siinä on jtn vikaa. lisättiin kaikki parametrit niin toimii
+
+menee väärään handleriin ja palauttaa väärän. minkä takia edes on useampi kuin yksi handleri????
+selkeyden takia??!?!??!
+
+yksittäisen blogin poisto ja muokkaus + testit
+
+testit ensin? joo
+-tyhjät api metodit
+-testit niihin
+-täytä metodit
+
+eka poistuu aina. filtteri tyrii koska objectid
+
+helpoin ratkaisu on että lähetetään koko uusi blogi ja se sitten korvaa sen mikä eroaa
+
+
+npm install jsonwebtoken
+
+
+-users taulu mongodb:hen 
+-yhdistä users taulu ja blogi taulu
+
+-blogeja lisätessä pitää olla validi token
+-lisää usersseja post käskyllä
+-hae kaikki käyttäjät GET /users
+
+-token jutut. tämä läpi viimeisenä????
+
+tee järjstyksessä. tää on hyvin tehty kurssi
+
+4.15: blogilistan laajennus, step3
+
+api/users post ja get
+
+users
+-id 
+-password 
+-name
+
+luodaan tualu ensin. ei sitä tarvii luoda. luodaan schema ja sit tallennetaan sen perusteella.
+sotten post route. se on nyt luotu? kokeillaan. toimii
+sitten getAll
+
+toimii. sit testit????? ei vielä
+
+4.16*: blogilistan laajennus, step4
+salasanan validointi routeriin ja throw error myös sinne
+käyttäjänimi ja nimi valdointi skeemaan
+
+testit lopuksi...tai sittenkin aluksi
+testataan:
+lisäys kun kaikki oikein
+lisäys kun käyttäjänimi puuttuu, on 2 pitkä, on jo käytössä
+lisäys kun salasana puuttuu, on 2 pitkä
+
+testit menee läpi. tämä tehty
+
+4.17: blogilistan laajennus, step5
+muokataan tauluja ensin niin että id listat????
+
+okei... tehty. mitäs sitten. 
+toiminnallisuus että blogia lisötessö lisätään myös user joka lisää? kumpaankin tauluun?
+tätä ei voi tehdä vielä. siihen tarvitaan kirjautuminen ja tokenit etc
+nyt vain siihen blogiin saadaan lisättyä joku käyttäjä....
+
+se tyyppi objectid, mutta miten lähettää se ja onko sillä merkitystä?
+miten populate toimii?
+
+okei populate toimii
+
+missä ollaan. käyttäjällä on blogi viittaukset.
+
+eli taulut kunnossa. niiden käyttö routejen tasolla puuttuu täysin.
+
+uuden blogin lisäyksen kohdalla sen lisänneen käyttäjän lisääminen myös ei onnistu tässä vaiheessa.
+teen sen niin että lisää aina ensimmäisen. 
+
+tää nyt tehty. joku käyttäjä aina lisätään. 
+
+4.18: blogilistan laajennus, step6
+Toteuta osan 4 luvun Token-perustainen kirjautuminen tapaan järjestelmään 
+token-perustainen autentikointi.
+
+kirjautumislomake. <--- puuttuu!! pitäiskö tehä? tulee osassa 5 eli ei
+
+
+joka lähettää POST api/login. 
+routessa on hashaus ja vertaus tietokannan salasanaan
+jos menee läpi niin routessa?? palautetaan token? jsonwebtoken
+selain tallentaa tokenin ja kun lisätään uusi blogi niin token menee headerissä.
+POST api/blogs route tarkistaan tokenin. käyttäjä tunnistetaan tokenista???
+
+ympäristömuuttuja SECRET. mikä sen pitää olla? mikä se on? voiko olla mikä vaan?
+voi olla mikä vaan
+
+tehdään testi tätä varten? 
+tää RIKKOO TESTIT!!
+korjataan testit toimimaan? lpoulta?
+postmanilla kokeillaan
+
+4.20*: blogilistan laajennus, step8
+
+Jos käytit samaa ratkaisua, refaktoroi tokenin erottaminen middlewareksi, 
+joka ottaa tokenin Authorization-headerista ja sijoittaa sen request-olion kenttään token.
+
+Muista, että normaali middleware on funktio, jolla on kolme parametria, 
+ja joka kutsuu lopuksi parametrina next olevaa funktiota:
+???
+voisko se next olla ihan ylimääräisenä siellä?
+sitä ei ole pakko olla. stack muodestataan siihen muotoon missä ne lisätään appiin tai routeen
+tai jtn. lisätään tämä routeen? miksi ei? koska se pitää olla muissakin routeissa tulevaisuudessa
+
+miten kokeillaan toimiiko yhä. postman
+
+4.21*: blogilistan laajennus, step9
+Muuta blogin poistavaa operaatiota siten, että poisto onnistuu ainoastaan jos poisto-operaation 
+tekijä (eli se kenen token on pyynnön mukana) on sama kuin blogin lisääjä.
+
+Tän laittaminen middlewareksi on suurtaa hukkaa. kannattaa tehdä apumetodi mieluummin.
+
+vika tehtävä
+testit toimimaan. lisäys ja poisto kusee. verifikointi puuttuu
+
+alustetaan käyttäjiä ja sit login ja sit tehdään asioita.
+testataan sekä ilman login ja login kanssa
+
+alustuksen blogitkin pitää uusia. ei muuteta.
+
+okei. alustetaan se yksi käyttäjä. sitten lisätään login helper metodi jota käytetään nuissa
+testeissä.
+
+login, otetaan token. liitetään token hakuun.
+
+post lisää sen passhashin. 
+await User.findOne({ username }); ei enää löydä sitä
+kokeillaan johtuuko skeema määritelmästä. Ei johdu siitä

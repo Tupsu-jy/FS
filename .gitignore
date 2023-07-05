@@ -1,3 +1,2 @@
 .env
-development/node_modules/
-osa4/node_modules/
+**/node_modules/
