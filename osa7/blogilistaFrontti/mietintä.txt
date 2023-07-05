@@ -1,0 +1,58 @@
+mennään suoraan lopputuloksen hahmotteluun
+
+togglable ratkaisu siihen uusi blogi komponenttiin
+blogi näytä kaikki juttu taasen... helpointa jos se on suoraan siinä blog komponentissa
+
+mikä tää ref juttu oli ja mihin sitä travitsis tässä? uusi blogi komponentin piilottamiseen sen jälkee
+kun luodaa uusi blogi. Kun luodaan uusi blogi niin kutsutaan funktiota app:issa. Siellä sitä
+käytetään sitä ref juttua togglablen visible arvon muokkaamiseen.
+
+blogien poistonappi puuttuu tehty
+
+blog.user.username
+eli verrataan käyttäjänimiä tehty
+
+notificaatio toimii. muu ei sitten toimikkaan
+
+monta contextia jotka yhdistetään yhteen provideriin?
+
+kontekstit:
+notificaatio
+blogit(sisältää liket etc)
+käyttäjän kirjautumien
+
+tää uudelleen kirjoittaminen on hämmentävää
+
+pitäiskö aloittaa alusta. suunnitella kunnolla. ei koska notifaaktio toimii.
+
+suunnitellaan vaan se blogijuttu kunnolla. 
+
+eli blogs on se react query. toimii. sitä käytetään ainakin. app ja createBlog. Blof ei käytä, sille vaan syötetään tiedot
+
+mennää app ja creatBlog taaksepäin ja muokataan hitaasti askel kerrallaan. Ei vaan käydään hitaasti läpi kummatkin. Ensin app
+
+getAllBlogs toimii. siitä nyt eteenpäin.
+
+
+blogsService sisältää ne hookit. Hookit haetaan sieltä ja laitetaan muuttujiin, samalla niihin laitetaan ne optionit.
+
+sitten näitä muuttujia kutsutaan kun tahdotaan tehdä jtn
+
+automaattinen rerendaus ei tapahdu. miten vanhassa
+
+all blogs haetaan ennen kuin päivitys tehdään. se on ongelma
+
+
+virheilmoitus notificaatio
+
+käyttäjän
+luodaan konteksti joka wrapataan app ympärille.
+se käyttää reduceria johon dispatchataan login ja logoutit
+niitä käytetään miten??
+
+käyttäjän näkymä.
+
+getAll serviceen
+useState
+
+"toimii"
