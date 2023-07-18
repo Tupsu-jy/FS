@@ -1,12 +1,24 @@
 import { useQuery, useMutation } from "@apollo/client";
-import { ALL_AUTHORS, ALL_BOOKS, ADD_BOOK, SET_BIRTHYEAR } from "./queries";
+import {
+  ALL_AUTHORS,
+  ALL_BOOKS,
+  ADD_BOOK,
+  SET_BIRTHYEAR,
+  LOGIN,
+} from "./queries";
 
 export const useSetAuthorBirthYear = () => {
   const [mutate, result] = useMutation(SET_BIRTHYEAR);
 
   const setBirthYear = ({ name, born }) => {
+    const token = localStorage.getItem("userToken");
     mutate({
       variables: { name, born: Number(born) },
+      context: {
+        headers: {
+          authorization: token ? `bearer ${token}` : "",
+        },
+      },
       refetchQueries: [{ query: ALL_AUTHORS }],
     });
   };
@@ -18,8 +30,14 @@ export const useAddBook = () => {
   const [mutate, result] = useMutation(ADD_BOOK);
 
   const addBook = ({ title, author, published, genres }) => {
+    const token = localStorage.getItem("userToken");
     mutate({
       variables: { title, author, published: Number(published), genres },
+      context: {
+        headers: {
+          authorization: token ? `bearer ${token}` : "",
+        },
+      },
     });
   };
 
@@ -46,3 +64,21 @@ const useAllAuthors = () => {
 };
 
 export { useAllAuthors };
+
+export const useLogin = () => {
+  const [login, result] = useMutation(LOGIN);
+
+  const executeLogin = async ({ username, password }) => {
+    try {
+      const { data } = await login({ variables: { username, password } });
+
+      if (data && data.login) {
+        localStorage.setItem("userToken", data.login.value);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return { executeLogin, ...result };
+};
