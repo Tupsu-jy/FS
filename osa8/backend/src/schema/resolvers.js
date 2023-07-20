@@ -4,6 +4,9 @@ const User = require('../models/user');
 const { UserInputError, AuthenticationError } = require('apollo-server');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { PubSub } = require('graphql-subscriptions');
+
+const pubsub = new PubSub();
 
 const resolvers = {
   Query: {
@@ -33,7 +36,30 @@ const resolvers = {
     me: async (root, args, context) => {
       return context.currentUser;
     },
+    booksByCurrentUserFavoriteGenre: async (root, args, context) => {
+      const currentUser = context.currentUser;
 
+      if (!currentUser) {
+        throw new AuthenticationError("not authenticated");
+      }
+
+      const books = await Book.find({ genres: { $in: [currentUser.favoriteGenre] } }).populate('author');
+
+      if (books.length === 0) {
+        throw new UserInputError(`No books found with genre: ${args.genre}`);
+      }
+
+      return books;
+    },
+    booksByGenre: async (root, args) => {
+      const books = await Book.find({ genres: { $in: [args.genre] } }).populate('author');
+
+      if (books.length === 0) {
+        throw new UserInputError(`No books found with genre: ${args.genre}`);
+      }
+
+      return books;
+    },
   },
   Mutation: {
     addBook: async (root, args, context) => {
@@ -66,7 +92,20 @@ const resolvers = {
         });
       }
 
+      // update the bookCount
+      author.bookCount += 1;
+      try {
+        await author.save();
+      } catch (e) {
+        throw new UserInputError(e.message, {
+          invalidArgs: args,
+        });
+      }
+
       book.author = author;
+
+      pubsub.publish('BOOK_ADDED', { bookAdded: book });
+
       return book;
     },
     editAuthor: async (root, args, context) => {
@@ -131,6 +170,13 @@ const resolvers = {
       return { value: token };
     },
   },
+
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+    },
+  },
+
 };
 
 module.exports = resolvers;

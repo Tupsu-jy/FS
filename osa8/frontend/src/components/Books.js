@@ -1,9 +1,20 @@
-import React, { useState } from "react";
-import { useAllBooks } from "../connection/hooks";
+import React, { useState, useEffect } from "react";
+import { useAllBooks, useBooksByGenre, useBookAddedSubscription } from "../connection/hooks";
 
 const Books = (props) => {
-  const { books, loading, error } = useAllBooks();
   const [selectedGenre, setSelectedGenre] = useState("all genres");
+  const allBooks = useAllBooks();
+  const booksByGenre = useBooksByGenre(selectedGenre);
+  const { data: newBookData } = useBookAddedSubscription();
+
+  const { books, loading, error } =
+    selectedGenre === "all genres" ? allBooks : booksByGenre;
+
+  useEffect(() => {
+    if (newBookData && newBookData.bookAdded) {
+      alert(`New book added: ${newBookData.bookAdded.title}`);
+    }
+  }, [newBookData]);
 
   if (!props.show) {
     return null;
@@ -17,12 +28,7 @@ const Books = (props) => {
     return <div>Error! {error.message}</div>;
   }
 
-  const genres = [...new Set(books.flatMap((book) => book.genres))];
-
-  const filteredBooks =
-    selectedGenre !== "all genres"
-      ? books.filter((book) => book.genres.includes(selectedGenre))
-      : books;
+  const genres = [...new Set(allBooks.books.flatMap((book) => book.genres))];
 
   return (
     <div>
@@ -30,11 +36,11 @@ const Books = (props) => {
       <table>
         <tbody>
           <tr>
-            <th></th>
+            <th>title</th>
             <th>author</th>
             <th>published</th>
           </tr>
-          {filteredBooks.map((a) => (
+          {books.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>

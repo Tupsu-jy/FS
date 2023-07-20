@@ -32,6 +32,8 @@ const typeDefs = gql`
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
     me: User
+    booksByCurrentUserFavoriteGenre: [Book!]!
+    booksByGenre(genre: String!): [Book!]!
   }
 
   type Mutation {
@@ -49,6 +51,11 @@ const typeDefs = gql`
     ): User
     login(username: String!, password: String!): Token
   }
+
+  type Subscription {
+    bookAdded: Book!
+  }
+
 `;
 
 module.exports = typeDefs;

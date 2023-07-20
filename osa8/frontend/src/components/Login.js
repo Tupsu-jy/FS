@@ -12,8 +12,14 @@ function Login(props) {
 
   const handleLogin = (event) => {
     event.preventDefault();
-    executeLogin({ username, password });
-    props.setIsLoggedIn(true);
+    executeLogin({ username, password })
+      .then(() => {
+        props.setIsLoggedIn(true);
+      })
+      .catch((error) => {
+        console.error(error);
+        props.setIsLoggedIn(false);
+      });
   };
 
   return (

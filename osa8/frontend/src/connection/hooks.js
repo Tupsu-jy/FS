@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useApolloClient, useSubscription } from "@apollo/client";
 import { useQuery, useMutation } from "@apollo/client";
 import {
   ALL_AUTHORS,
@@ -5,6 +7,9 @@ import {
   ADD_BOOK,
   SET_BIRTHYEAR,
   LOGIN,
+  BOOK_ADDED_SUBSCRIPTION,
+  BOOKS_BY_CURRENT_USER_FAVORITE_GENRE,
+  BOOKS_BY_GENRE,
 } from "./queries";
 
 export const useSetAuthorBirthYear = () => {
@@ -63,6 +68,27 @@ const useAllAuthors = () => {
   return { authors: data.allAuthors };
 };
 
+export const useBooksByCurrentUserFavoriteGenre = () => {
+  const { data, loading, error } = useQuery(BOOKS_BY_CURRENT_USER_FAVORITE_GENRE);
+
+  return {
+    books: data ? data.booksByCurrentUserFavoriteGenre : [],
+    loading,
+    error,
+  };
+};
+
+export const useBooksByGenre = (genre) => {
+  const { data, loading, error } = useQuery(BOOKS_BY_GENRE, { variables: { genre } });
+
+  return {
+    books: data ? data.booksByGenre : [],
+    loading,
+    error,
+  };
+};
+
+
 export { useAllAuthors };
 
 export const useLogin = () => {
@@ -82,3 +108,25 @@ export const useLogin = () => {
 
   return { executeLogin, ...result };
 };
+
+export const useBookAddedSubscription = () => {
+  const client = useApolloClient();
+  const { data: subscriptionData, loading: subscriptionLoading } = useSubscription(BOOK_ADDED_SUBSCRIPTION);
+
+  useEffect(() => {
+    if (subscriptionData && !subscriptionLoading) {
+      const cachedBooks = client.readQuery({ query: ALL_BOOKS });
+
+      const updatedBooks = [...cachedBooks.allBooks, subscriptionData.bookAdded];
+
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks: updatedBooks },
+      });
+
+      client.reFetchObservableQueries();
+    }
+  }, [subscriptionData, subscriptionLoading, client]);
+
+  return { data: subscriptionData, loading: subscriptionLoading };
+}
