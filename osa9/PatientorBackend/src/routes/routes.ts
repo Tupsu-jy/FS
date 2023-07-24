@@ -1,30 +1,22 @@
 import express, { Request, Response } from 'express';
 import dataService from '../services/dataService';
+import { Patient, Entry } from '../types';
 
 const router = express.Router();
 
-router.get('/ping', (_req: Request, res: Response): void => {
-  res.send('pong');
+router.get('/diagnoses', (_req: Request, res: Response): void => {
+  res.send(dataService.getAllDiagnoses());
 });
 
-router.get('/diagnoses', (_req: Request, res: Response): void => {
-  res.send(dataService.getDiagnoses());
+router.get('/ping', (_req: Request, res: Response): void => {
+  res.send('pong');
 });
 
 router.get('/patients', (_req: Request, res: Response): void => {
   res.send(dataService.getNonSensitivePatients());
 });
 
-router.post('/patients', async (req: Request, res: Response) => {
-  try {
-    const newPatient = await dataService.addPatient(req.body);
-    res.json(newPatient);
-  } catch (e) {
-    res.status(400).send(e.message);
-  }
-});
-
-router.get('/patients/:id', (req: Request, res: Response) => {
+router.get('/patients/:id', (req: Request, res: Response): void => {
   const patient = dataService.getPatient(req.params.id);
 
   if (patient) {
@@ -34,12 +26,21 @@ router.get('/patients/:id', (req: Request, res: Response) => {
   }
 });
 
-router.post('/patients/:id/entries', async (req: Request, res: Response) => {
+router.post('/patients', (req: Request, res: Response): void => {
   try {
-    const newEntry = await dataService.addEntry(req.params.id, req.body);
+    const newPatient = dataService.addPatient(req.body as Patient);
+    res.json(newPatient);
+  } catch (e) {
+    res.status(400).send((e as Error).message);
+  }
+});
+
+router.post('/patients/:id/entries', (req: Request, res: Response): void => {
+  try {
+    const newEntry = dataService.addEntry(req.params.id, req.body as Entry);
     res.json(newEntry);
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send((e as Error).message);
   }
 });
 

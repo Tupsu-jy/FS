@@ -1,29 +1,80 @@
-import { Patient, NonSensitivePatient, Entry } from '../types';
+import { Patient, PatientWithFullDiagnoses, NonSensitivePatient, Entry, EntryWithFullDiagnoses, Diagnosis } from '../types';
+import diagnoses from '../../data/diagnoses';
+import patients from '../../data/patients';
+import { v4 as uuidv4 } from 'uuid';
 
-const getDiagnoses = (): Array<string> => {
-  // Your implementation here
+const getAllDiagnoses = (): Diagnosis[] => {
+  return diagnoses;
+};
+
+const getDiagnosis = (code: string): Diagnosis | undefined => {
+  return diagnoses.find(diagnosis => diagnosis.code === code);
 };
 
 const getNonSensitivePatients = (): NonSensitivePatient[] => {
-  // Your implementation here
+  return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+    id,
+    name,
+    dateOfBirth,
+    gender,
+    occupation,
+  }));
 };
 
-const addPatient = async (patient: Patient): Promise<Patient> => {
-  // Your implementation here
+const addPatient = (patient: Patient): Patient => {
+  const newPatient = {
+    ...patient,
+    entries: patient.entries ?? [],
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    id: uuidv4() as string,
+  };
+
+  patients.push(newPatient);
+  return newPatient;
 };
 
-const getPatient = (id: string): Patient | undefined => {
-  // Your implementation here
+const getPatient = (id: string): PatientWithFullDiagnoses | undefined => {
+  const patient = patients.find(p => p.id === id);
+  
+  if (!patient) {
+    return undefined;
+  }
+  
+  const entriesWithFullDiagnoses: EntryWithFullDiagnoses[] = patient.entries.map(entry => {
+    if (!entry.diagnosisCodes) {
+      return {...entry};
+    }
+
+    const diagnoses = entry.diagnosisCodes.map(code => getDiagnosis(code));
+    const filteredDiagnoses = diagnoses.filter((diagnosis): diagnosis is Diagnosis => diagnosis !== undefined);
+    return {...entry, diagnoses: filteredDiagnoses, diagnosisCodes: undefined};
+  });
+
+  return {...patient, entries: entriesWithFullDiagnoses};
 };
 
-const addEntry = async (patientId: string, entry: Entry): Promise<Entry> => {
-  // Your implementation here
+const addEntry = (patientId: string, entry: Entry): Entry => {
+  const patient = patients.find(p => p.id === patientId);
+
+  if (!patient) {
+    throw new Error('Patient not found');
+  }
+
+  const newEntry = {
+    ...entry,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    id: uuidv4(),
+  };
+
+  patient.entries.push(newEntry);
+
+  return newEntry;
 };
 
 export default {
-  getDiagnoses,
   getNonSensitivePatients,
   addPatient,
   getPatient,
-  addEntry
+  addEntry,
+  getAllDiagnoses,
 };
