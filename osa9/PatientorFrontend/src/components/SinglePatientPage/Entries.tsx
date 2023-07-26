@@ -1,3 +1,4 @@
+import { Paper } from '@mui/material';
 import React from 'react';
 import { Entry, EntryWithFullDiagnoses, HealthCheckRating, Diagnosis } from '../../types';
 import { 
@@ -16,7 +17,7 @@ interface DiagnosisProps {
 
 const CommonEntryDetails: React.FC<CommonEntryProps> = ({ entry }) => (
   <div>
-    <h3>{entry.date} <span style={{color: 'lightgrey'}}>{entry.type}</span></h3>
+    <h3>{entry.date} <span style={{color: 'black'}}>{entry.type}</span></h3>
     <p>{entry.description}</p>
     <p>Specialist: {entry.specialist}</p>
     <DiagnosisDetails diagnoses={entry.diagnoses} />
@@ -71,7 +72,11 @@ const EntryDetails: React.FC<{entry: Entry}> = ({ entry }) => {
 
 const Entries: React.FC<{entries: Entry[]}> = ({ entries }) => (
   <div>
-    {entries.map((entry, index) => <EntryDetails key={index} entry={entry} />)}
+    {entries.map((entry, index) => 
+      <Paper style={{ marginBottom: '1em', padding: '1em' }} key={index}>
+        <EntryDetails entry={entry} />
+      </Paper>
+    )}
   </div>
 );
 

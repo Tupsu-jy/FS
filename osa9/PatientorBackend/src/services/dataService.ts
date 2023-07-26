@@ -1,4 +1,4 @@
-import { Patient, PatientWithFullDiagnoses, NonSensitivePatient, Entry, EntryWithFullDiagnoses, Diagnosis } from '../types';
+import { Patient, PatientWithoutId, PatientWithFullDiagnoses, NonSensitivePatient, Entry, EntryWithFullDiagnoses, EntryWithoutId, Diagnosis } from '../types';
 import diagnoses from '../../data/diagnoses';
 import patients from '../../data/patients';
 import { v4 as uuidv4 } from 'uuid';
@@ -21,12 +21,12 @@ const getNonSensitivePatients = (): NonSensitivePatient[] => {
   }));
 };
 
-const addPatient = (patient: Patient): Patient => {
+const addPatient = (patient: PatientWithoutId): Patient => {
   const newPatient = {
     ...patient,
     entries: patient.entries ?? [],
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    id: uuidv4() as string,
+    id: uuidv4() ,
   };
 
   patients.push(newPatient);
@@ -53,7 +53,7 @@ const getPatient = (id: string): PatientWithFullDiagnoses | undefined => {
   return {...patient, entries: entriesWithFullDiagnoses};
 };
 
-const addEntry = (patientId: string, entry: Entry): Entry => {
+const addEntry = (patientId: string, entry: EntryWithoutId): Entry => {
   const patient = patients.find(p => p.id === patientId);
 
   if (!patient) {

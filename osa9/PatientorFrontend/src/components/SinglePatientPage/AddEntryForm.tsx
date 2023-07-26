@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Field, Form } from 'formik';
-import { TextField, Button, FormControl, InputLabel, Select, MenuItem, makeStyles } from '@material-ui/core';
-import { EntryType, HealthCheckRating, Diagnosis } from '../../types';
+import { TextField, Button, FormControl, InputLabel, Select, MenuItem, makeStyles, Paper } from '@material-ui/core';
+import { EntryType, HealthCheckRating } from '../../types';
 import apiService from '../../services/patients';
+import { Alert, Grid } from '@mui/material';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -12,10 +14,15 @@ const useStyles = makeStyles((theme) => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
+  paper: {
+    padding: '1em',
+    marginBottom: '1em',
+    border: '1px solid black'
+  }
 }));
 
 const AddEntryForm: React.FC<{ patientId: string }> = ({ patientId }) => {
-
+  const [error, setError] = useState<string | undefined>(undefined);
   const [diagnosisCodes, setDiagnosisCodes] = React.useState<string[]>([]);
 
   React.useEffect(() => {
@@ -28,18 +35,31 @@ const AddEntryForm: React.FC<{ patientId: string }> = ({ patientId }) => {
     fetchDiagnoses();
   }, []);
 
-  
   const onSubmit = async (values: any) => {
     try {
       await apiService.addEntry(patientId, values);
       alert('Entry added successfully');
-    } catch (e) {
-      console.error(e);
-      alert('Failed to add entry');
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        if (e?.response?.data && typeof e?.response?.data === "string") {
+          const message = e.response.data.replace('Something went wrong. Error: ', '');
+          console.error(message);
+          setError(message);
+          setTimeout(() => setError(undefined), 5000); // this line clears the error message after 5 seconds
+        } else {
+          setError("Unrecognized axios error");
+          setTimeout(() => setError(undefined), 5000); // this line clears the error message after 5 seconds
+        }
+      } else {
+        console.error("Unknown error", e);
+        setError("Unknown error");
+        setTimeout(() => setError(undefined), 5000); // this line clears the error message after 5 seconds
+      }
     }
   };
 
   const classes = useStyles();
+
   return (
     <Formik
       initialValues={{
@@ -65,118 +85,76 @@ const AddEntryForm: React.FC<{ patientId: string }> = ({ patientId }) => {
       }}
     >
       {({ values, handleChange, handleBlur }) => (
-        <Form>
-          <FormControl className={classes.formControl}>
-            <InputLabel id="entry-type-label">Entry Type</InputLabel>
-            <Field
-              as={Select}
-              labelId="entry-type-label"
-              id="entry-type-select"
-              name="type"
-            >
-              <MenuItem value={"HealthCheck"}>Health Check</MenuItem>
-              <MenuItem value={"OccupationalHealthcare"}>Occupational Healthcare</MenuItem>
-              <MenuItem value={"Hospital"}>Hospital</MenuItem>
-            </Field>
-          </FormControl>
-          <Field
-            as={TextField}
-            name="description"
-            label="Description"
-            onChange={handleChange}
-          />
-          <Field
-            as={TextField}
-            type="date"
-            name="date"
-            label="Date"
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <Field
-            as={TextField}
-            name="specialist"
-            label="Specialist"
-          />
-          <FormControl className={classes.formControl}>
-            <InputLabel id="diagnosis-codes-label">Diagnosis Codes</InputLabel>
-            <Field
-              as={Select}
-              labelId="diagnosis-codes-label"
-              id="diagnosis-codes-select"
-              name="diagnosisCodes"
-              multiple
-            >
-              {diagnosisCodes.map((code) => (
-                <MenuItem key={code} value={code}>
-                  {code}
-                </MenuItem>
-              ))}
-            </Field>
-          </FormControl>
-          {values.type === "HealthCheck" && (
-            <Field
-              as={TextField}
-              type="number"
-              name="healthCheckRating"
-              label="Health Check Rating"
-              inputProps={{
-                step: 1,
-                min: 0,
-                max: 3,
-              }}
-            />
-          )}
-          {values.type === "OccupationalHealthcare" && (
-            <>
-              <Field
-                as={TextField}
-                name="employerName"
-                label="Employer Name"
-              />
-              <Field
-                as={TextField}
-                type="date"
-                name="sickLeave.startDate"
-                label="Sick Leave Start Date"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-              <Field
-                as={TextField}
-                type="date"
-                name="sickLeave.endDate"
-                label="Sick Leave End Date"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </>
-          )}
-          {values.type === "Hospital" && (
-            <>
-              <Field
-                as={TextField}
-                type="date"
-                name="discharge.date"
-                label="Discharge Date"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-              <Field
-                as={TextField}
-                name="discharge.criteria"
-                label="Discharge Criteria"
-              />
-            </>
-          )}
-          <Button type='submit' variant="contained" color="primary">
-            Add
-          </Button>
-        </Form>
+        <Paper style={{ padding: '1em', marginBottom: '1em' }}>
+          <Form>
+            {error && <Alert severity="error">{error}</Alert>}
+<Grid container spacing={2}>
+  <Grid item xs={12} sm={6}>
+    <FormControl className={classes.formControl}>
+      <InputLabel id="entry-type-label">Entry Type</InputLabel>
+      <Field
+        as={Select}
+        labelId="entry-type-label"
+        id="entry-type-select"
+        name="type"
+      >
+        <MenuItem value={"HealthCheck"}>Health Check</MenuItem>
+        <MenuItem value={"OccupationalHealthcare"}>Occupational Healthcare</MenuItem>
+        <MenuItem value={"Hospital"}>Hospital</MenuItem>
+      </Field>
+    </FormControl>
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <Field
+      as={TextField}
+      name="description"
+      label="Description"
+      fullWidth
+      onChange={handleChange}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <Field
+      as={TextField}
+      name="date"
+      label="Date"
+      fullWidth
+      onChange={handleChange}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <Field
+      as={TextField}
+      name="specialist"
+      label="Specialist"
+      fullWidth
+      onChange={handleChange}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <Field
+      as={TextField}
+      name="diagnosisCodes"
+      label="Diagnosis Codes"
+      fullWidth
+      onChange={handleChange}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <Field
+      as={TextField}
+      name="healthCheckRating"
+      label="Health Check Rating"
+      fullWidth
+      onChange={handleChange}
+    />
+  </Grid>
+</Grid>
+            <Button type='submit' variant="contained" color="primary" style={{ marginTop: '1em' }}>
+              Add
+            </Button>
+          </Form>
+        </Paper>
       )}
     </Formik>
   );

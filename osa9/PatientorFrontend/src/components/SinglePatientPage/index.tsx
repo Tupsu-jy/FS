@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Paper, Typography } from '@material-ui/core';
 import patientService from '../../services/patients';
 import { PatientWithFullDiagnoses } from '../../types';
 import Entries from './Entries';
@@ -27,17 +28,27 @@ const SinglePatientPage = () => {
     return null;
   }
 
+  const getGenderSymbol = (gender: string) => {
+    switch (gender.toLowerCase()) {
+      case 'male':
+        return '♂';
+      case 'female':
+        return '♀';
+      default:
+        return '';
+    }
+  };
+
   return (
-    <div>
-      <h2>{patient.name}</h2>
-      <p>Gender: {patient.gender}</p>
-      <p>Ssn: {patient.ssn}</p>
-      <p>Occupation: {patient.occupation}</p>
-      <p>Date of Birth: {patient.dateOfBirth}</p>
+    <Paper style={{ padding: '1em' }}>
+      <Typography variant="h4">{patient.name} {getGenderSymbol(patient.gender)}</Typography>
+      <Typography>Ssn: {patient.ssn}</Typography>
+      <Typography>Occupation: {patient.occupation}</Typography>
+      <Typography>Date of Birth: {patient.dateOfBirth}</Typography>
       <AddEntryForm patientId={patient.id} />
-      <h3>Entries</h3>
+      <Typography variant="h5">Entries</Typography>
       <Entries entries={patient.entries} />
-    </div>
+    </Paper>
   );
 };
 

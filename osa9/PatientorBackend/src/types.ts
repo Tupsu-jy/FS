@@ -53,6 +53,15 @@ export type Entry =
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
 
+export type HealthCheckEntryWithoutId = Omit<HealthCheckEntry, 'id'>;
+export type OccupationalHealthcareEntryWithoutId = Omit<OccupationalHealthcareEntry, 'id'>;
+export type HospitalEntryWithoutId = Omit<HospitalEntry, 'id'>;
+
+export type EntryWithoutId =
+  | HealthCheckEntryWithoutId
+  | OccupationalHealthcareEntryWithoutId
+  | HospitalEntryWithoutId;
+  
 interface HealthCheckEntryWithFullDiagnoses extends Omit<HealthCheckEntry, 'diagnosisCodes'> {
   diagnoses?: Array<Diagnosis>;
 }
